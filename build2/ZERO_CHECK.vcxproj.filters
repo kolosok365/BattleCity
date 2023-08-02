@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Program Files\BattleCity\build2\CMakeFiles\7e10f69758829efeb3d920aaa2ea360b\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Program Files\BattleCity\external\glfw\CMake\cmake_uninstall.cmake.in">
+      <Filter>Buildsystem Input Files\external\glfw\CMake</Filter>
+    </None>
+    <None Include="C:\Program Files\BattleCity\external\glfw\CMake\glfw3.pc.in">
+      <Filter>Buildsystem Input Files\external\glfw\CMake</Filter>
+    </None>
+    <None Include="C:\Program Files\BattleCity\external\glfw\CMake\glfw3Config.cmake.in">
+      <Filter>Buildsystem Input Files\external\glfw\CMake</Filter>
+    </None>
+    <None Include="C:\Program Files\BattleCity\external\glfw\CMakeLists.txt">
+      <Filter>Buildsystem Input Files\external\glfw</Filter>
+    </None>
+    <None Include="C:\Program Files\BattleCity\external\glfw\src\CMakeLists.txt">
+      <Filter>Buildsystem Input Files\external\glfw\src</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{D8AAB82F-3953-34D6-A672-F7C5BBDC6BDB}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{EDF1D81C-EBA0-314E-9610-C53DA5FC665B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Buildsystem Input Files\external\glfw">
+      <UniqueIdentifier>{251195FF-98EF-35EB-9161-28328DC9EC4A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Buildsystem Input Files\external\glfw\CMake">
+      <UniqueIdentifier>{9CB4CBE4-59E2-39BA-B0EE-DC2BC7248D19}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Buildsystem Input Files\external\glfw\src">
+      <UniqueIdentifier>{0E6143C5-ADD7-3292-8363-D57977F12787}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
