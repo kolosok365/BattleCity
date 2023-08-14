@@ -1,0 +1,8 @@
+#version 460//версия шейдера
+layout(location = 0) in vec3 vertex_position;//входные данные шейдера вектор из 3 чисел. layout обозначает позицию
+layout(location = 1) in vec3 vertex_color;//входные данные шейдера вектор из 3 чисел
+out vec3 color;//цвет, значение на выход
+void main() {
+   color = vertex_color;
+   gl_Position = vec4(vertex_position, 1.0);//позиция vertex на выход
+}
