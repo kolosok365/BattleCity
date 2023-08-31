@@ -2,37 +2,33 @@
 #include <GLFW/glfw3.h>
 
 #include <iostream>
-#include "Renderer/ShaderProgram.h"
+#include <chrono>
+
+#include "Game/Game.h"
 #include "Resources/ResourceManager.h"
-
-GLfloat point[] = {
-	0.0f, 0.5f, 0.0f,
-	0.5f, -0.5f, 0.0f,
-	-0.5f, -0.5f, 0.0f
-};
-
-GLfloat colors[] = {
-	1.0f, 0.0f, 0.0f,
-	0.0f, 1.0f, 0.0f,
-	0.0f, 0.0f, 1.0f
-};
 
 //Шейдер - это определяемая пользователем программа, предназначенная для запуска на некотором этапе графического процессора.
 //Bind - связывать
 
-int g_WIndowSizeX = 640;
-int g_WIndowSizeY = 480;
+glm::ivec2 g_windowSize(640, 480);
+
+Game g_game(g_windowSize);
+
+
+
 
 void glfwWindowSizeCallback(GLFWwindow* pWindow, int width, int height) {
-	g_WIndowSizeX = width;
-	g_WIndowSizeY = height;
-	glViewport(0, 0, g_WIndowSizeX, g_WIndowSizeY);
+	g_windowSize.x = width;
+	g_windowSize.y = height;
+	glViewport(0, 0, width, height);
 }
 
 void glfwKeyCallback(GLFWwindow* pWindow, int key, int scancode, int action, int mode) {
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
 		glfwSetWindowShouldClose(pWindow, GL_TRUE);
 	}
+	
+	g_game.setKey(key, action);
 }
 
 int main(int argc, char** argv)
@@ -49,7 +45,7 @@ int main(int argc, char** argv)
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	/* Create a windowed mode window and its OpenGL context */
-	GLFWwindow* pWindow = glfwCreateWindow(g_WIndowSizeX, g_WIndowSizeY, "Battle-CIty", nullptr, nullptr);
+	GLFWwindow* pWindow = glfwCreateWindow(g_windowSize.x, g_windowSize.y, "Battle-CIty", nullptr, nullptr);
 	if (!pWindow)
 	{
 		std::cout << "glfwCreateWindow failed!\n";
@@ -71,62 +67,28 @@ int main(int argc, char** argv)
 	std::cout << "Renderer: " << glGetString(GL_RENDERER) << std::endl;
 	std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
 
-	glClearColor(1, 1, 0, 1);
+	glClearColor(0, 0, 0, 1);
 
 	{
-		ResourceManager resourceManager(argv[0]);
-		auto pDefaultShaderProgram = resourceManager.loadShaders("DefaultShader", "res/shaders/vertex.txt", "res/shaders/fragment.txt");
-		if (!pDefaultShaderProgram) {
-			std::cerr << "Can't create shader program: " << "DefaultShader" << std::endl;
-			return -1;
-		}
-
-		//std::string vertexShader;// (vertex_shader);
-		//std::string fragmentShader;// (fragment_shader);
-		//Renderer::ShaderProgram shaderProgram(vertexShader, fragmentShader);
-		//if (!shaderProgram.isCompiled()) {
-		//	std::cerr << "Can't create shader program!" << std::endl;
-		//	return -1;
-		//}
-
-		GLuint points_vbo = 0;//позиции vertex-a
-		glGenBuffers(1, &points_vbo);//драйвер, при вызове команды генерирует один vertex_buffer_object и записывает значение идентификатора указателю points_vbo
-		glBindBuffer(GL_ARRAY_BUFFER, points_vbo);//подключили и сделали текущим созданный буфер
-		glBufferData(GL_ARRAY_BUFFER, sizeof(point), point, GL_STATIC_DRAW);
-
-		GLuint colors_vbo = 0;//цвета vertex-a
-		glGenBuffers(1, &colors_vbo);//драйвер, при вызове команды генерирует один vertex_buffer_object и записывает значение идентификатора указателю points_vbo
-		glBindBuffer(GL_ARRAY_BUFFER, colors_vbo);//подключили и сделали текущим созданный буфер
-		glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW);
-
-		GLuint vao = 0;//vertex_array_object
-		glGenVertexArrays(1, &vao);//
-		glBindVertexArray(vao);//сделали текущим
-
-		//включение позиции для координат (location = 0)
-		glEnableVertexAttribArray(0);//функция включает нулевую позицию в шейдере
-		glBindBuffer(GL_ARRAY_BUFFER, points_vbo);//подключаем текущий буфер
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);//связываем данные
-
-		//включение позиции для цвета (location = 1)
-		glEnableVertexAttribArray(1);//функция включает 1-ую позицию в шейдере
-		glBindBuffer(GL_ARRAY_BUFFER, colors_vbo);//подключаем текущий буфер
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, nullptr);//связываем данные
-
-
+		ResourceManager::setExecutablePath(argv[0]);
+		g_game.init();
+		
+		auto lastTime = std::chrono::high_resolution_clock::now();
 
 		/* Loop until the user closes the window */
 		while (!glfwWindowShouldClose(pWindow))//проверка флага должно ли быть закрыто окно
 		{
+			
+			auto currentTime = std::chrono::high_resolution_clock::now();
+			uint64_t duration = std::chrono::duration_cast<std::chrono::nanoseconds>(currentTime - lastTime).count();
+			lastTime = currentTime;
+			g_game.update(duration);
+			
+
 			/* Render here*/
 			glClear(GL_COLOR_BUFFER_BIT);//очищает буферы до заданных значений
 
-			pDefaultShaderProgram->use();
-			//делаем отрисовку
-			//glUseProgram(shader_program);//подключение шейдера
-
-			glBindVertexArray(vao);//подключаем vertex_atribut_object, который хотим отрисовать
-			glDrawArrays(GL_TRIANGLES, 0, 3);//отрисовка
+			g_game.render();
 
 			/* Swap front and back buffers */
 			glfwSwapBuffers(pWindow);//функция меняет местами передний и задний буферы указанного окна. 
@@ -136,6 +98,5 @@ int main(int argc, char** argv)
 		}
 	}
 
-	glfwTerminate();//освобождение всех ресурсов
-	return 0;
+	ResourceManager::unloadAllResources();
 }

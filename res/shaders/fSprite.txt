@@ -1,5 +1,4 @@
 #version 460//версия шейдера
-in vec3 color;
 in vec2 texCoords; 
 out vec4 frag_color;
 

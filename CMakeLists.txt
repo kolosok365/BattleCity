@@ -7,8 +7,19 @@ add_executable(${PROJECT_NAME}
 	src/main.cpp
 	src/Renderer/ShaderProgram.cpp
 	src/Renderer/ShaderProgram.h
+	src/Renderer/Texture2D.h
+	src/Renderer/Texture2D.cpp
+	src/Renderer/Sprite.cpp
+	src/Renderer/Sprite.h
+	src/Renderer/AnimatedSprite.h
+	src/Renderer/AnimatedSprite.cpp
 	src/Resources/ResourceManager.cpp
 	src/Resources/ResourceManager.h
+	src/Resources/stb_image.h
+	src/Game/Game.cpp
+	src/Game/Game.h
+	src/Game/Tank.cpp
+	src/Game/Tank.h
 )
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
@@ -23,6 +34,8 @@ target_link_libraries(${PROJECT_NAME} PUBLIC glfw)
 
 add_subdirectory(external/glad)
 target_link_libraries(${PROJECT_NAME} PUBLIC glad)
+
+include_directories(external/glm)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/)
 
