@@ -4,7 +4,7 @@
 #include<map>
 #include<vector>
 
-namespace Renderer
+namespace RenderEngine
 {
 	class ShaderProgram;
 	class Texture2D;
@@ -27,51 +27,53 @@ public:
 	ResourceManager& operator=(const ResourceManager&&) = delete;
 	ResourceManager(ResourceManager&&) = delete;
 
-	static std::shared_ptr<Renderer::ShaderProgram> loadShaders(const std::string& shaderName, const std::string& vertexPath, const std::string& fragmentPath); //Шаблон класса std::shared_ptr определяет общий указатель, который может делиться правами собственности на объект с другими общими указателями. 
+	static std::shared_ptr<RenderEngine::ShaderProgram> loadShaders(const std::string& shaderName, const std::string& vertexPath, const std::string& fragmentPath); //Шаблон класса std::shared_ptr определяет общий указатель, который может делиться правами собственности на объект с другими общими указателями. 
 																			//Поведение совместного доступа реализуется с помощью метода, известного как подсчет ссылок, при котором количество общих указателей, указывающих на объект, 
 																			  //сохраняется вместе с ним. Когда это число достигает нуля, либо путем уничтожения или переназначения последнего экземпляра std::shared_ptr , объект автоматически уничтожается.
-	static std::shared_ptr<Renderer::ShaderProgram> getShaderProgram(const std::string& shaderName);
-	static std::shared_ptr<Renderer::Texture2D> loadTexture(const std::string& textureName, const std::string& texturePath);//загрузка тектстуры
+	static std::shared_ptr<RenderEngine::ShaderProgram> getShaderProgram(const std::string& shaderName);
+	static std::shared_ptr<RenderEngine::Texture2D> loadTexture(const std::string& textureName, const std::string& texturePath);//загрузка тектстуры
  
-	static std::shared_ptr<Renderer::Texture2D> getTexture(const std::string& textureName);
+	static std::shared_ptr<RenderEngine::Texture2D> getTexture(const std::string& textureName);
 
-	static std::shared_ptr<Renderer::Sprite> loadSprite(const std::string& spriteName,
+	static std::shared_ptr<RenderEngine::Sprite> loadSprite(const std::string& spriteName,
 												const std::string& textureName,
 												const std::string& shaderName,
-												const unsigned int spriteWidth,
-												const unsigned int spriteHeight,
 												const std::string subTextureName = "default");
 	
-	static std::shared_ptr<Renderer::Sprite> getSprite(const std::string& spriteName);
+	static std::shared_ptr<RenderEngine::Sprite> getSprite(const std::string& spriteName);
 
-	static std::shared_ptr<Renderer::AnimatedSprite> loadAnimatedSprite(const std::string& spriteName,
+	static std::shared_ptr<RenderEngine::AnimatedSprite> loadAnimatedSprite(const std::string& spriteName,
 														 const std::string& textureName,
 														 const std::string& shaderName,
-														 const unsigned int spriteWidth,
-														 const unsigned int spriteHeight,
 														 const std::string subTextureName = "default");
 
-	static std::shared_ptr<Renderer::AnimatedSprite> getAnimatedSprite(const std::string& spriteName);
+	static std::shared_ptr<RenderEngine::AnimatedSprite> getAnimatedSprite(const std::string& spriteName);
 
-	static std::shared_ptr<Renderer::Texture2D> loadTextureAtlas(std::string textureName,
+	static std::shared_ptr<RenderEngine::Texture2D> loadTextureAtlas(std::string textureName,
 														  std::string texturePath,
 													      std::vector<std::string> subTextures,
 														  const unsigned int SubTextureWidth,
 														  const unsigned int SubTextureHeight);
 
+	static bool loadJSONResources(const std::string& JSONPath);
+
+	static const std::vector<std::vector<std::string>>& getLevels() { return m_levels; }
+
 private:
 	static std::string getFileString(const std::string& relativeFilePath);
-	typedef std::map<const std::string, std::shared_ptr<Renderer::ShaderProgram>> ShaderProgramMap;//состоит из названия шейдера и указателя на шейдерную программу
+	typedef std::map<const std::string, std::shared_ptr<RenderEngine::ShaderProgram>> ShaderProgramMap;//состоит из названия шейдера и указателя на шейдерную программу
 	static ShaderProgramMap m_shaderPrograms;
 
-	typedef std::map<const std::string, std::shared_ptr<Renderer::Texture2D>> TexturesMap;
+	typedef std::map<const std::string, std::shared_ptr<RenderEngine::Texture2D>> TexturesMap;
 	static TexturesMap m_textures;
 
-	typedef std::map<const std::string, std::shared_ptr<Renderer::Sprite>> SpritesMap;
+	typedef std::map<const std::string, std::shared_ptr<RenderEngine::Sprite>> SpritesMap;
 	static SpritesMap m_sprites;
 
-	typedef std::map<const std::string, std::shared_ptr<Renderer::AnimatedSprite>> AnimatedSpritesMap;
+	typedef std::map<const std::string, std::shared_ptr<RenderEngine::AnimatedSprite>> AnimatedSpritesMap;
 	static AnimatedSpritesMap m_animatedSprites;
+
+	static std::vector<std::vector<std::string>> m_levels;
 
 	static std::string m_path;
 

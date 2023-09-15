@@ -6,13 +6,14 @@
 
 #include "Game/Game.h"
 #include "Resources/ResourceManager.h"
+#include "Renderer/Renderer.h"
 
 //Шейдер - это определяемая пользователем программа, предназначенная для запуска на некотором этапе графического процессора.
 //Bind - связывать
 
-glm::ivec2 g_windowSize(640, 480);
+glm::ivec2 g_windowSize(13 * 16, 14 * 16);
 
-Game g_game(g_windowSize);
+std::unique_ptr<Game> g_game = std::make_unique<Game>(g_windowSize);
 
 
 
@@ -20,7 +21,23 @@ Game g_game(g_windowSize);
 void glfwWindowSizeCallback(GLFWwindow* pWindow, int width, int height) {
 	g_windowSize.x = width;
 	g_windowSize.y = height;
-	glViewport(0, 0, width, height);
+
+	const float map_aspect_ratio = 13.f / 14.f;
+	unsigned int viewPortWidth = g_windowSize.x;
+	unsigned int viewPortHeight = g_windowSize.y;
+	unsigned int viewPortLeftOffset = 0;
+	unsigned int viewPortBottomOffset = 0;
+
+	if ((static_cast<float>(g_windowSize.x) / g_windowSize.y) > map_aspect_ratio) {
+		viewPortWidth = static_cast<unsigned int>(g_windowSize.y * map_aspect_ratio);
+		viewPortLeftOffset = static_cast<unsigned int>((g_windowSize.x - viewPortWidth) / 2);
+	}
+	else {
+		viewPortHeight = g_windowSize.x * map_aspect_ratio;
+		viewPortBottomOffset = (g_windowSize.y - viewPortHeight) / 2;
+	}
+
+	RenderEngine::Renderer::setViewport(viewPortWidth, viewPortHeight, viewPortLeftOffset, viewPortBottomOffset);
 }
 
 void glfwKeyCallback(GLFWwindow* pWindow, int key, int scancode, int action, int mode) {
@@ -28,7 +45,7 @@ void glfwKeyCallback(GLFWwindow* pWindow, int key, int scancode, int action, int
 		glfwSetWindowShouldClose(pWindow, GL_TRUE);
 	}
 	
-	g_game.setKey(key, action);
+	g_game->setKey(key, action);
 }
 
 int main(int argc, char** argv)
@@ -64,39 +81,42 @@ int main(int argc, char** argv)
 		return -1;
 	}
 
-	std::cout << "Renderer: " << glGetString(GL_RENDERER) << std::endl;
-	std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
+	std::cout << "Renderer: " << RenderEngine::Renderer::getRendererStr() << std::endl;
+	std::cout << "OpenGL version: " << RenderEngine::Renderer::getVersionStr() << std::endl;
 
-	glClearColor(0, 0, 0, 1);
+	RenderEngine::Renderer::setClearColor(0, 0, 0, 1);
+
 
 	{
 		ResourceManager::setExecutablePath(argv[0]);
-		g_game.init();
+		g_game->init();
 		
 		auto lastTime = std::chrono::high_resolution_clock::now();
 
 		/* Loop until the user closes the window */
 		while (!glfwWindowShouldClose(pWindow))//проверка флага должно ли быть закрыто окно
 		{
-			
+			/* Poll for and process events */
+			glfwPollEvents();//обработка всех событий
+
 			auto currentTime = std::chrono::high_resolution_clock::now();
 			uint64_t duration = std::chrono::duration_cast<std::chrono::nanoseconds>(currentTime - lastTime).count();
 			lastTime = currentTime;
-			g_game.update(duration);
+			g_game->update(duration);
 			
 
 			/* Render here*/
-			glClear(GL_COLOR_BUFFER_BIT);//очищает буферы до заданных значений
-
-			g_game.render();
+			RenderEngine::Renderer::clear();
+			g_game->render();
 
 			/* Swap front and back buffers */
 			glfwSwapBuffers(pWindow);//функция меняет местами передний и задний буферы указанного окна. 
-
-			/* Poll for and process events */
-			glfwPollEvents();//обработка всех событий
 		}
+		g_game = nullptr;
+		ResourceManager::unloadAllResources();
 	}
 
-	ResourceManager::unloadAllResources();
+	glfwTerminate();
+	return 0;
+
 }

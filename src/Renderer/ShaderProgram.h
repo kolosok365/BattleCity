@@ -5,7 +5,7 @@
 #include<string>
 #include <glm/mat4x4.hpp>
 
-namespace Renderer {
+namespace RenderEngine {
 	class ShaderProgram {
 	public:
 		ShaderProgram(const std::string& vertexShader, const std::string& fragmentShader);

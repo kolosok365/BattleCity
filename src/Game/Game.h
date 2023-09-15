@@ -5,7 +5,8 @@
 #include "../Renderer/Texture2D.h"
 #include "../Renderer/Sprite.h"
 #include "../Renderer/AnimatedSprite.h"
-#include "Tank.h"
+#include "GameObjects/Tank.h"
+#include "Level.h"
 
 #include <glm/vec2.hpp>
 #include <glm/mat4x4.hpp>
@@ -15,6 +16,7 @@
 
 #include<array>
 
+class Level;
 class Game
 {
 public:
@@ -38,4 +40,5 @@ private:
 
 	EGameState m_eCurrentGameState;
 	std::unique_ptr<Tank> m_pTank;
+	std::unique_ptr<Level> m_pLevel;
 };
