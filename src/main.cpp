@@ -22,7 +22,8 @@ void glfwWindowSizeCallback(GLFWwindow* pWindow, int width, int height) {
 	g_windowSize.x = width;
 	g_windowSize.y = height;
 
-	const float map_aspect_ratio = 13.f / 14.f;
+	const float map_aspect_ratio = static_cast<float>(g_game->getCurrentLevelWidth() / g_game->getCurrentLevelHeight());
+	
 	unsigned int viewPortWidth = g_windowSize.x;
 	unsigned int viewPortHeight = g_windowSize.y;
 	unsigned int viewPortLeftOffset = 0;
@@ -48,9 +49,11 @@ void glfwKeyCallback(GLFWwindow* pWindow, int key, int scancode, int action, int
 	g_game->setKey(key, action);
 }
 
+
+
 int main(int argc, char** argv)
 {
-
+	
 	/* Initialize the library */
 	if (!glfwInit()) {//Библиотека инициализируется с помощью glfwInit, который возвращает GLFW_FALSE в случае возникновения ошибки.
 		std::cout << "glfwInit failed!";
@@ -85,11 +88,12 @@ int main(int argc, char** argv)
 	std::cout << "OpenGL version: " << RenderEngine::Renderer::getVersionStr() << std::endl;
 
 	RenderEngine::Renderer::setClearColor(0, 0, 0, 1);
-
+	RenderEngine::Renderer::setDepthTest(true);
 
 	{
 		ResourceManager::setExecutablePath(argv[0]);
 		g_game->init();
+		glfwSetWindowSize(pWindow, static_cast<int>(3 * g_game->getCurrentLevelWidth()), static_cast<int>(3 * g_game->getCurrentLevelHeight()));
 		
 		auto lastTime = std::chrono::high_resolution_clock::now();
 
@@ -100,7 +104,7 @@ int main(int argc, char** argv)
 			glfwPollEvents();//обработка всех событий
 
 			auto currentTime = std::chrono::high_resolution_clock::now();
-			uint64_t duration = std::chrono::duration_cast<std::chrono::nanoseconds>(currentTime - lastTime).count();
+			double duration = std::chrono::duration<double,std::milli>(currentTime - lastTime).count();
 			lastTime = currentTime;
 			g_game->update(duration);
 			

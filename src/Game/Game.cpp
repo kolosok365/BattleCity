@@ -26,7 +26,7 @@ void Game::render() {
 	}
 }
 
-void Game::update(const uint64_t delta) {
+void Game::update(const double delta) {
 	
 	if (m_pLevel) {
 		m_pLevel->update(delta);
@@ -71,36 +71,25 @@ bool Game::init() {
 		std::cerr << "Can't find shader program: " << "spriteShader" << std::endl;
 		return false;
 	}	
-	
-	auto pTextureAtlas = ResourceManager::getTexture("mapTextureAtlas");
-	if (!pTextureAtlas) {
-		std::cerr << "Can't find texture atlas: " << "mapTextureAtlas" << std::endl;
-		return false;
-	}
+	m_pLevel = std::make_unique<Level>(ResourceManager::getLevels()[0]);
+	m_windowSize.x = static_cast<int>(m_pLevel->gelLevelWidth());
+	m_windowSize.y = static_cast<int>(m_pLevel->gelLevelHeight());
 
-	auto pTanksTextureAtlas =  ResourceManager::getTexture("tanksTextureAtlas");
-	if (!pTanksTextureAtlas) {
-		std::cerr << "Can't find texture atlas: " << "tanksTextureAtlas" << std::endl;
-		return false;
-	}
-	
-	
 	glm::mat4 projectionMatrix = glm::ortho(0.f, static_cast<float>(m_windowSize.x), 0.f, static_cast<float>(m_windowSize.y), -100.f, 100.f);
 
 	pSpriteShaderProgram->use();
 	pSpriteShaderProgram->setInt("tex", 0);//устанавливаем структуру из нулевого слота
 	pSpriteShaderProgram->setMatrix4("projectionMat", projectionMatrix);
 
-	auto pTanksAnimatedSprite = ResourceManager::getAnimatedSprite("tankAnimatedSprite");
-	if (!pTanksAnimatedSprite) {
-		std::cerr << "Can't find animated sprite: " << "tankAnimatedSprite" << std::endl;
-		return false;
-	}
-	
-
-	m_pTank = std::make_unique<Tank>(pTanksAnimatedSprite, 0.0000001f, glm::vec2(0), glm::vec2(16.f, 16.f));
-
-	m_pLevel = std::make_unique<Level>(ResourceManager::getLevels()[0]);
+	m_pTank = std::make_unique<Tank>(0.05, m_pLevel->getPlayerRespawn_1(), glm::vec2(Level::BLOCK_SIZE, 16.f), 0.f);
 
 	return true;
+}
+
+size_t Game::getCurrentLevelWidth() const {
+	return m_pLevel->gelLevelWidth();
+}
+
+size_t Game::getCurrentLevelHeight() const {
+	return m_pLevel->gelLevelHeight();
 }

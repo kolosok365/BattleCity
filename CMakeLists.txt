@@ -11,8 +11,6 @@ add_executable(${PROJECT_NAME}
 	src/Renderer/Texture2D.cpp
 	src/Renderer/Sprite.cpp
 	src/Renderer/Sprite.h
-	src/Renderer/AnimatedSprite.h
-	src/Renderer/AnimatedSprite.cpp
 	src/Renderer/VertexBuffer.cpp
 	src/Renderer/VertexBuffer.h
 	src/Renderer/VertexArray.cpp
@@ -23,6 +21,8 @@ add_executable(${PROJECT_NAME}
 	src/Renderer/VertexBufferLayout.h
 	src/Renderer/Renderer.cpp
 	src/Renderer/Renderer.h
+	src/Renderer/SpriteAnimator.cpp
+	src/Renderer/SpriteAnimator.h
 
 	src/Resources/ResourceManager.cpp
 	src/Resources/ResourceManager.h
@@ -40,7 +40,21 @@ add_executable(${PROJECT_NAME}
 	src/Game/GameObjects/Tank.h
 	src/Game/GameObjects/BrickWall.cpp
 	src/Game/GameObjects/BrickWall.h
+	src/Game/GameObjects/BetonWall.cpp
+	src/Game/GameObjects/BetonWall.h
+	src/Game/GameObjects/Trees.cpp
+	src/Game/GameObjects/Trees.h
+	src/Game/GameObjects/Ice.cpp
+	src/Game/GameObjects/Ice.h
+	src/Game/GameObjects/Water.cpp
+	src/Game/GameObjects/Water.h
+	src/Game/GameObjects/Eagle.cpp
+	src/Game/GameObjects/Eagle.h
+	src/Game/GameObjects/Border.cpp
+	src/Game/GameObjects/Border.h
 
+	src/System/Timer.cpp
+	src/System/Timer.h
 )
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)

@@ -4,7 +4,6 @@
 #include "../Resources/ResourceManager.h"
 #include "../Renderer/Texture2D.h"
 #include "../Renderer/Sprite.h"
-#include "../Renderer/AnimatedSprite.h"
 #include "GameObjects/Tank.h"
 #include "Level.h"
 
@@ -24,9 +23,11 @@ public:
 	~Game();
 
 	void render();
-	void update(const uint64_t delta);
+	void update(const double delta);
 	void setKey(const int key, int action);
 	bool init();
+	size_t getCurrentLevelWidth() const;
+	size_t getCurrentLevelHeight() const;
 
 private:
 	std::array<bool, 349> m_keys;
